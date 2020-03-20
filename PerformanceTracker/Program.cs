@@ -10,6 +10,8 @@ namespace PerformanceTracker
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Testing");
+            Console.ReadKey();
         }
     }
 }
