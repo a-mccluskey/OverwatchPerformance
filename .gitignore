@@ -4,4 +4,4 @@
 */obj/Debug/PerformanceTracker.csproj.FileListAbsolute.txt
 */obj/Release/PerformanceTracker.csproj.CoreCompileInputs.cache
 */obj/Debug/PerformanceTracker.pdb
-*/obj/Debug/PerformanceTracker.csprojAssemblyReference.cache
+*.cache
