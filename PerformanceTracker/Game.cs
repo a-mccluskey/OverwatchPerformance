@@ -36,7 +36,31 @@ namespace PerformanceTracker
 
         private string _map;
 
+        public string Map
+        {
+            get => _map;
+            set
+            {
+                if (Maps.AvailableMaps.Contains(value))
+                    _map = value;
+                else
+                    throw new Exception("Not a valid map for this season - check the app.config contains the correct maps");
+            }
+        }
+
         private int _TotalHealing;
+
+        public int TotalHealing
+        {
+            get => _TotalHealing;
+            set
+            {
+                if (value >= 0)
+                    _TotalHealing = value;
+                else
+                    throw new Exception("Total healing must be positive");
+            }
+        }
 
         public List<Hero> Heroes;
 

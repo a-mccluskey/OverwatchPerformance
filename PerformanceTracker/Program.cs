@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -16,6 +17,7 @@ namespace PerformanceTracker
         {
             string FileName = "SeasonData.csv";
             string FileNamePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + FileName;
+            Maps.LoadMaps((string)ConfigurationManager.AppSettings["Map"]);
             games = new List<Game>();
             if (File.Exists(FileNamePath))
                 ReadExistingFileIn();
@@ -39,11 +41,13 @@ namespace PerformanceTracker
             // Start of a do while loop?
             var NextGame = new Game();
             Console.WriteLine("Please enter the map name:");
-            // Waiting on doing the map populate
+            Maps.List();
+            string input = Console.ReadLine();
+            NextGame.Map = input;
             Console.WriteLine("Please enter the number of deaths:");
             NextGame.Deaths = int.Parse(Console.ReadLine()); ;
             Console.WriteLine("Please enter the map name:");
-            NextGame.Heroes.Add(null);  // Waiting on the hero object
+            NextGame.Heroes.Add(new Hero());  // Waiting on the hero object
 
         }
     }
