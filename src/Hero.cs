@@ -17,7 +17,35 @@ namespace PerformanceTracker
 
         public void SetHero(string input)
         {
-            //this.hero = input;
+            switch (input.ToUpper())
+            {
+                case "ANA":
+                    hero = SupportHero.Ana;
+                    break;
+                case "BAPTISTE":
+                case "BAP":
+                    hero = SupportHero.Baptiste;
+                    break;
+                case "BRIGITTE":
+                case "BRIG":
+                    hero = SupportHero.Brigitte;
+                    break;
+                case "LUCIO":
+                    hero = SupportHero.Lucio;
+                    break;
+                case "MERCY":
+                    hero = SupportHero.Mercy;
+                    break;
+                case "MOIRA":
+                    hero = SupportHero.Moira;
+                    break;
+                case "ZENYATTA":
+                case "ZEN":
+                    hero = SupportHero.Zenyatta;
+                    break;
+                default:
+                    throw new Exception("Invalid hero selection");
+            }
         }
     }
 }

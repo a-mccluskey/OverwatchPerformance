@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ namespace PerformanceTracker
         {
             get => _map;
             set
-            {
+            { 
                 if (Maps.AvailableMaps.Contains(value))
                     _map = value;
                 else
@@ -62,7 +63,35 @@ namespace PerformanceTracker
             }
         }
 
-        public List<Hero> Heroes;
+        private TimeSpan _GameTime;
+        
+        public TimeSpan GameTime
+        {
+            get => _GameTime;
+            set
+            {
+                if (value.TotalMinutes < 45 && value.TotalSeconds > 60)
+                    _GameTime = value;
+                else
+                    throw new Exception("Game must be at least 60 seconds but less than 45 minutes");
+            }
+        }
 
+        public DateTime PlayedOn;
+
+        public List<Hero> Heroes = new List<Hero>();
+
+        private string HeroesToString()
+        {
+            string output = "";
+            foreach (var hero in this.Heroes)
+                output += hero.hero;
+            return output;
+        }
+
+        public override string ToString()
+        {
+            return $"{this.SR}, {this.Map}, {this.Deaths}, {this.GameTime.ToString("mm':'ss")}, {this.PlayedOn}, {this.HeroesToString()}";
+        }
     }
 }

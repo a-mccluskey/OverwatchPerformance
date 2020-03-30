@@ -22,7 +22,16 @@ namespace PerformanceTracker
             if (File.Exists(FileNamePath))
                 ReadExistingFileIn();
             else
-                PopulateGameData(); 
+                PopulateGameData();
+            StreamWriter output = new StreamWriter(FileNamePath);
+            output.WriteLine("SR, Map, Deaths, Game Length, Played On, Hero");
+            output.Flush();
+            foreach(var game in games)
+            {
+                output.WriteLine($"{game}");
+            }
+            output.Close();
+            Console.WriteLine("Press Any key to exit");
             Console.ReadKey();
         }
 
@@ -37,18 +46,32 @@ namespace PerformanceTracker
             Console.WriteLine("Please enter your earlist SR figure:");
             FirstGame.SR = int.Parse(Console.ReadLine());
             games.Add(FirstGame);
-            
-            // Start of a do while loop?
-            var NextGame = new Game();
-            Console.WriteLine("Please enter the map name:");
-            Maps.List();
-            string input = Console.ReadLine();
-            NextGame.Map = input;
-            Console.WriteLine("Please enter the number of deaths:");
-            NextGame.Deaths = int.Parse(Console.ReadLine()); ;
-            Console.WriteLine("Please enter the map name:");
-            NextGame.Heroes.Add(new Hero());  // Waiting on the hero object
+            ConsoleKey exitCheck;
 
+            do
+            {
+                Console.Clear();
+                var NextGame = new Game();
+                NextGame.PlayedOn = DateTime.Now;
+                Console.WriteLine("Please enter the map name:");
+                Maps.List();
+                string input = Console.ReadLine();
+                NextGame.Map = input;
+                Console.WriteLine("Please enter the number of deaths:");
+                NextGame.Deaths = int.Parse(Console.ReadLine()); ;
+                Console.WriteLine("Please enter the First Hero:");
+                Hero firstHero = new Hero();
+                firstHero.SetHero(Console.ReadLine());
+                NextGame.Heroes.Add(firstHero);
+                //NextGame.Heroes.Add(new Hero());  // Waiting on the hero object
+                Console.WriteLine("Please enter the game length");
+                NextGame.GameTime = TimeSpan.Parse("0:" + Console.ReadLine().Replace('.', ':'));
+                Console.WriteLine("Please enter your SR at the end of this game");
+                NextGame.SR = int.Parse(Console.ReadLine());
+                games.Add(NextGame);
+                Console.WriteLine("Press X to exit, or any key to add a new game detail");
+                exitCheck = Console.ReadKey().Key;
+            } while (exitCheck != ConsoleKey.X);
         }
     }
 }
