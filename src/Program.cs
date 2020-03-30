@@ -63,7 +63,6 @@ namespace PerformanceTracker
                 Hero firstHero = new Hero();
                 firstHero.SetHero(Console.ReadLine());
                 NextGame.Heroes.Add(firstHero);
-                //NextGame.Heroes.Add(new Hero());  // Waiting on the hero object
                 Console.WriteLine("Please enter the game length");
                 NextGame.GameTime = TimeSpan.Parse("0:" + Console.ReadLine().Replace('.', ':'));
                 Console.WriteLine("Please enter your SR at the end of this game");
