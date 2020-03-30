@@ -85,7 +85,9 @@ namespace PerformanceTracker
         {
             string output = "";
             foreach (var hero in this.Heroes)
-                output += hero.hero;
+                output += hero.hero+ ";";
+            if (output.Length>2)
+                output = output.Remove(output.Length-1);
             return output;
         }
 
