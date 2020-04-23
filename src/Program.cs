@@ -15,9 +15,12 @@ namespace PerformanceTracker
 
         static void Main(string[] args)
         {
-            string FileName = "SeasonData.csv";
+            string FileName = "SeasonData2.csv";
             string FileNamePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + FileName;
-            Maps.LoadMaps((string)ConfigurationManager.AppSettings["Map"]);
+            
+            // Removed due to the map rotation changing mid season 21
+            //Maps.LoadMaps((string)ConfigurationManager.AppSettings["Map"]);
+            Maps.ExcludedMaps((string)ConfigurationManager.AppSettings["ExcludedMaps"]);
             games = new List<Game>();
             if (File.Exists(FileNamePath))
                 ReadExistingFileIn(FileNamePath);
