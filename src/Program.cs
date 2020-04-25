@@ -15,7 +15,7 @@ namespace PerformanceTracker
 
         static void Main(string[] args)
         {
-            string FileName = "SeasonData2.csv";
+            string FileName = "SeasonData.csv";
             string FileNamePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + FileName;
             
             // Removed due to the map rotation changing mid season 21
@@ -34,9 +34,11 @@ namespace PerformanceTracker
                 // Add more games in? 
                 // Display stats for the current list of games?
 
-                Console.WriteLine("Press X to exit");
+                Console.WriteLine("Press S to save the games details, X to quit without saving");
                 exitCheck = Console.ReadKey().Key;
-            } while (exitCheck != ConsoleKey.X) ;
+                if (exitCheck == ConsoleKey.X)
+                    Environment.Exit(0);
+            } while (exitCheck != ConsoleKey.S) ;
 
             StreamWriter output = new StreamWriter(FileNamePath);
             output.WriteLine("SR, Map, Deaths, Game Length, Played On, Hero");
@@ -47,7 +49,7 @@ namespace PerformanceTracker
                 output.Flush();
             }
             output.Close();
-            Console.WriteLine("Press Any key to exit");
+            Console.WriteLine("File Saved.\nPress Any key to exit");
             Console.ReadKey();
         }
 
