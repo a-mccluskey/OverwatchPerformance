@@ -45,7 +45,7 @@ namespace PerformanceTracker
                 if (Maps.AvailableMaps.Contains(value))
                     _map = value;
                 else
-                    throw new Exception("Not a valid map for this season - check the app.config contains the correct maps");
+                    throw new Exception("Not a valid map");
             }
         }
 

@@ -26,6 +26,18 @@ namespace PerformanceTracker
                 ReadExistingFileIn(FileNamePath);
             else
                 PopulateGameData();
+
+            ConsoleKey exitCheck;
+            do
+            {
+                // TODO
+                // Add more games in? 
+                // Display stats for the current list of games?
+
+                Console.WriteLine("Press X to exit");
+                exitCheck = Console.ReadKey().Key;
+            } while (exitCheck != ConsoleKey.X) ;
+
             StreamWriter output = new StreamWriter(FileNamePath);
             output.WriteLine("SR, Map, Deaths, Game Length, Played On, Hero");
             output.Flush();
@@ -82,10 +94,13 @@ namespace PerformanceTracker
                 Console.Clear();
                 var NextGame = new Game();
                 NextGame.PlayedOn = DateTime.Now;
-                Console.WriteLine("Please enter the map name:");
-                Maps.List();
-                string input = Console.ReadLine();
-                NextGame.Map = input;
+                do
+                {
+                    Console.WriteLine("Please enter the map name:");
+                    Console.WriteLine(Maps.List());
+                    string input = Console.ReadLine();
+                    NextGame.Map = Maps.ValidateMap(input);
+                } while (NextGame.Map == null);
                 Console.WriteLine("Please enter the number of deaths:");
                 NextGame.Deaths = int.Parse(Console.ReadLine()); ;
                 Console.WriteLine("Please enter the First Hero:");

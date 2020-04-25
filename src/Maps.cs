@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,8 @@ namespace PerformanceTracker
     static class Maps
     {
         public static List<string> AvailableMaps;
+
+        public static List<string> SeasonMaps;
 
         public static void LoadMaps(string input)
         {
@@ -49,16 +52,101 @@ namespace PerformanceTracker
             AvailableMaps.Add("Nepal");
             AvailableMaps.Add("Oasis");
 
+            SeasonMaps = new List<string>(AvailableMaps);
             foreach (var map in input.Split(','))
             {
-                AvailableMaps.Remove(map.Trim());
+                SeasonMaps.Remove(map.Trim());
             }
         }
 
-        public static void List()
+        public static string List()
         {
-            foreach (var map in AvailableMaps)
-                Console.WriteLine("* " + map);
+            string output = "";
+            for (int i = 0; i<SeasonMaps.Count; i++)
+                output+=$"{i} {SeasonMaps[i]}\n";
+            return output;
+        }
+        
+        public static string ValidateMap(string input)
+        {
+            int index;
+            if (int.TryParse(input, out index))
+                return SeasonMaps[index];
+            switch(input.ToLower())
+            {
+                case "hanamura":
+                    return "Hanamura";
+                case "horizon lunar colony":
+                case "horizon":
+                    return "Horizon Lunar Colony";
+                case "paris":
+                    return "Paris";
+                case "temple of anubis":
+                case "temple":
+                case "anubis":
+                    return "Temple of Anubis";
+                case "volskaya industries":
+                case "volskaya":
+                    return "Volskaya Industries";
+
+                case "dorado":
+                    return "Dorado";
+                case "junkertown":
+                case "junk":
+                case "junk town":
+                    return "Junkertown";
+                case "rialto":
+                    return "Rialto";
+                case "route 66":
+                case "route":
+                case "66":
+                    return "Route 66";
+                case "watchpoint: gibraltar":
+                case "watchpoint: gibralter":
+                case "watchpoint gibraltar":
+                case "watchpoint":
+                case "gibraltar":
+                case "gibralter":
+                case "gibralta":
+                    return "Watchpoint: Gibraltar";
+
+                case "blizzard world":
+                case "blizzard":
+                case "theme park":
+                    return "Blizzard World";
+                case "eichenwalde":
+                case "castle":
+                    return "Eichenwalde";
+                case "hollywood":
+                case "holywood":
+                case "holly wood":
+                    return "Hollywood";
+                case "king's row":
+                case "kings row":
+                case "row":
+                    return "King's Row";
+                case "numbani":
+                    return "Numbani";
+
+                case "busan":
+                case "korea":
+                    return "Busan";
+                case "ilios":
+                case "ilio":
+                case "illios":
+                    return "Ilios";
+                case "lijiang tower":
+                case "lijiang":
+                case "tower":
+                    return "Lijiang Tower";
+                case "nepal":
+                    return "Nepal";
+                case "oasis":
+                    return "Oasis";
+            }
+
+            // if we don't know which was tried then just return null
+            return null;
         }
     }
 }
