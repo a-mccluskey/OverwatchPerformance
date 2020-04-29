@@ -148,10 +148,20 @@ namespace PerformanceTracker
                 Console.Write($"|{games[i].Map.PadLeft(21)}|");
                 Console.Write(games[i].GameTime.ToString("mm':'ss' '").PadLeft(13) + "|");
                 Console.Write((games[i].Deaths.ToString()+" ").PadLeft(8) + "|");
-                //TODO Deaths Per 10
-                Console.Write("".PadLeft(15)+ "|");
+                Console.Write(Common.DeathsPerTen(games[i].Deaths, games[i].GameTime).PadLeft(15)+ "|");
                 Console.WriteLine($" {games[i].PlayedOn.ToString().PadLeft(21)} |");
+                if(i==30)
+                {
+                    Console.WriteLine("Press Any Key to Display the next page");
+                    Console.ReadKey();
+                    Console.Clear();
+                    Common.RowOfDashes();
+                    Console.WriteLine("|  SR  | Diff |         Map         | Game Length | Deaths | Deaths per 10 | Date & Time Played on |");
+                    Common.RowOfDashes();
+                }
             }
+            Common.RowOfDashes();
+            Console.WriteLine();
         }
     }
 }

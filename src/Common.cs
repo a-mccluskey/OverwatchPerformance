@@ -24,6 +24,13 @@ namespace PerformanceTracker
             WriteTextInColour(input, ConsoleColor.Red);
         }
 
+        public static string DeathsPerTen(int deaths, TimeSpan GameLength)
+        {
+            if (deaths <= 0)
+                return "0";
+            return Math.Round((deaths / GameLength.TotalSeconds) * 600, 1).ToString();
+        }
+
         private static void WriteTextInColour(string input, ConsoleColor color)
         {
             Console.ForegroundColor = color;
