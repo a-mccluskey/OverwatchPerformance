@@ -17,7 +17,7 @@ namespace PerformanceTracker
         {
             string FileName = "SeasonData.csv";
             string FileNamePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + FileName;
-            
+
             // Removed due to the map rotation changing mid season 21
             //Maps.LoadMaps((string)ConfigurationManager.AppSettings["Map"]);
             Maps.ExcludedMaps((string)ConfigurationManager.AppSettings["ExcludedMaps"]);
@@ -27,23 +27,24 @@ namespace PerformanceTracker
             else
                 PopulateGameData();
 
-            ConsoleKey exitCheck;
+            ConsoleKey keyPressed;
             do
             {
-                // TODO
-                // Add more games in? 
-                // Display stats for the current list of games?
+                Console.WriteLine("Press S to save the games details, D to display the current stats, X to quit without saving");
+                keyPressed = Console.ReadKey().Key;
 
-                Console.WriteLine("Press S to save the games details, X to quit without saving");
-                exitCheck = Console.ReadKey().Key;
-                if (exitCheck == ConsoleKey.X)
+                if (keyPressed == ConsoleKey.X)
                     Environment.Exit(0);
-            } while (exitCheck != ConsoleKey.S) ;
+
+                if (keyPressed == ConsoleKey.D)
+                    DisplayGameData();
+
+            } while (keyPressed != ConsoleKey.S);
 
             StreamWriter output = new StreamWriter(FileNamePath);
             output.WriteLine("SR, Map, Deaths, Game Length, Played On, Hero");
             output.Flush();
-            foreach(var game in games)
+            foreach (var game in games)
             {
                 output.WriteLine($"{game}");
                 output.Flush();
@@ -69,7 +70,7 @@ namespace PerformanceTracker
                 NextGame.SR = int.Parse(currentLine[0]);
                 NextGame.Map = currentLine[1].Trim();
                 NextGame.Deaths = int.Parse(currentLine[2]);
-                NextGame.GameTime = TimeSpan.Parse("0:"+currentLine[3].Trim());
+                NextGame.GameTime = TimeSpan.Parse("0:" + currentLine[3].Trim());
                 NextGame.PlayedOn = DateTime.Parse(currentLine[4]);
                 string[] HeroList = currentLine[5].Split(';');
                 foreach (var HeroString in HeroList)
@@ -117,6 +118,40 @@ namespace PerformanceTracker
                 Console.WriteLine("Press X to exit, or any key to add a new game detail");
                 exitCheck = Console.ReadKey().Key;
             } while (exitCheck != ConsoleKey.X);
+        }
+
+        static void DisplayGameData()
+        {
+            Console.Clear();
+            Common.RowOfDashes();
+            Console.WriteLine("|  SR  | Diff |         Map         | Game Length | Deaths | Deaths per 10 | Date & Time Played on |");
+            Common.RowOfDashes();
+
+            Console.Write($"| {games[0].SR} |");
+            Console.Write(" ---- |         ----        |");//Diff & Map
+            Console.Write("     ----    |  ----  |");//GL & Deaths
+            Console.Write("     ----      |           ----        |");//DP10 & TPlayed
+            Console.WriteLine();
+
+            for (int i = 1; i<games.Count; i++)
+            {
+                Console.Write($"| {games[i].SR} |");
+                int diffBetweenGames = games[i].SR - games[i - 1].SR;
+                if (diffBetweenGames == 0)
+                    Console.Write(" ---- ");
+                string colorText = diffBetweenGames.ToString()+" ";
+                colorText = colorText.PadLeft(6);
+                if (diffBetweenGames > 0)
+                    Common.WriteTextInGreen(colorText);
+                if (diffBetweenGames < 0)
+                    Common.WriteTextInRed(colorText);
+                Console.Write($"|{games[i].Map.PadLeft(21)}|");
+                Console.Write(games[i].GameTime.ToString("mm':'ss' '").PadLeft(13) + "|");
+                Console.Write((games[i].Deaths.ToString()+" ").PadLeft(8) + "|");
+                //TODO Deaths Per 10
+                Console.Write("".PadLeft(15)+ "|");
+                Console.WriteLine($" {games[i].PlayedOn.ToString().PadLeft(21)} |");
+            }
         }
     }
 }
