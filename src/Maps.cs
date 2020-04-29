@@ -37,6 +37,7 @@ namespace PerformanceTracker
             AvailableMaps.Add("Junkertown");
             AvailableMaps.Add("Rialto");
             AvailableMaps.Add("Route 66");
+            AvailableMaps.Add("Havana");
             AvailableMaps.Add("Watchpoint: Gibraltar");
             // Assault / Escort AKA Hybrid
             AvailableMaps.Add("Blizzard World");
@@ -101,6 +102,8 @@ namespace PerformanceTracker
                 case "route":
                 case "66":
                     return "Route 66";
+                case "havana":
+                    return "Havana";
                 case "watchpoint: gibraltar":
                 case "watchpoint: gibralter":
                 case "watchpoint gibraltar":
