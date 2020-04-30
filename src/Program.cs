@@ -203,42 +203,11 @@ namespace PerformanceTracker
             double winRate = ((double)winCount / (winCount + lossCount)*100);
             winRate = Math.Round(winRate, 1);
 
-            string HighestDay = "";
-            int daywincount = 0;
-            string HighestDayRate = "";
-            int DayWinRate = 0;
-            foreach (var Day in DayStats)
-            {
-                if (Day.Value.GetWins() > daywincount)
-                {
-                    HighestDay = Day.Key.ToString();
-                    daywincount = Day.Value.GetWins();
-                }
+            var orderedDaysByTotalWins = DayStats.OrderByDescending(_dayOfWeek => _dayOfWeek.Value.GetWins()).ToList();
+            var orderedDaysByWinRate = DayStats.OrderByDescending(_dayOfWeek => _dayOfWeek.Value.GetWinRate()).ToList();
 
-                if (Day.Value.GetWinRate() > DayWinRate)
-                {
-                    HighestDayRate = Day.Key.ToString();
-                    DayWinRate = Day.Value.GetWinRate();
-                }
-            }
-
-            string HighestMap = "";
-            string HighestMapRate = "";
-            int mapWinCount = 0;
-            int mapWinRate = 0;
-            foreach (var _map in MapStats)
-            {
-                if (_map.Value.GetWins()>mapWinCount)
-                {
-                    HighestMap = _map.Key;
-                    mapWinCount = _map.Value.GetWins();
-                }
-                if (_map.Value.GetWinRate() > mapWinRate)
-                {
-                    HighestMapRate = _map.Key;
-                    mapWinRate = _map.Value.GetWinRate();
-                }
-            }
+            var orderedMapsByTotalWins = MapStats.OrderByDescending(_map => _map.Value.GetWins()).ToList();
+            var orderedMapsByWinRate = MapStats.OrderByDescending(_map => _map.Value.GetWinRate()).ToList();
 
             Common.RowOfDashes();
             Console.WriteLine($"Wins: {winCount} Losses: {lossCount} Draws: {drawCount}");
@@ -246,12 +215,13 @@ namespace PerformanceTracker
             Console.WriteLine($"Total SR change this season: {SR_Difference}");
 
             Common.RowOfDashes();
-            Console.WriteLine($"Best Day for wins is {HighestDay} With {daywincount} Wins");
-            Console.WriteLine($"Best Day for win rate is {HighestDayRate} With {DayWinRate}%");
+            Console.WriteLine($"Best Day for wins is {orderedDaysByTotalWins[0].Key} With {orderedDaysByTotalWins[0].Value.GetWins()} Wins");
+            Console.WriteLine($"Best Day for win rate is {orderedDaysByWinRate[0].Key} With {orderedDaysByWinRate[0].Value.GetWinRate()}%");
+            Console.WriteLine($"Worst Day for win rate is {orderedDaysByWinRate.Last().Key} at {orderedDaysByWinRate.Last().Value.GetWinRate()}%");
 
             Common.RowOfDashes();
-            Console.WriteLine($"Best Map for wins is {HighestMap} With {mapWinCount} Wins");
-            Console.WriteLine($"Best Day for win rate is {HighestMapRate} With {mapWinRate}%");
+            Console.WriteLine($"Best Map for wins is {orderedMapsByTotalWins[0].Key} With {orderedMapsByTotalWins[0].Value.GetWins()} Wins at {orderedMapsByTotalWins[0].Value.GetWinRate()}%");
+            Console.WriteLine($"Best Map for win rate is {orderedMapsByWinRate[0].Key} At {orderedMapsByWinRate[0].Value.GetWinRate()}% for a total of {orderedMapsByWinRate[0].Value.GetWins()} Wins");
             Common.RowOfDashes();
         }
     }
