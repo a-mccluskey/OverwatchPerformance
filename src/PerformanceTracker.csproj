@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Common.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GameCreator.cs" />
     <Compile Include="Hero.cs" />
     <Compile Include="Maps.cs" />
     <Compile Include="Program.cs" />

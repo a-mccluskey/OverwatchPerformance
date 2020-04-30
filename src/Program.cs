@@ -30,15 +30,17 @@ namespace PerformanceTracker
             ConsoleKey keyPressed;
             do
             {
-                Console.WriteLine("Press S to save the games details, D to display the current stats, X to quit without saving");
+                Console.WriteLine("Press S to save the games details\nA to add a new game\nD to display the current stats\nO to display an overview\nX to quit without saving");
                 keyPressed = Console.ReadKey().Key;
 
                 if (keyPressed == ConsoleKey.X)
                     Environment.Exit(0);
-
                 if (keyPressed == ConsoleKey.D)
                     DisplayGameData();
-
+                if (keyPressed == ConsoleKey.O)
+                    GamesOverview();
+                if (keyPressed == ConsoleKey.A)
+                    AddNewGame();
             } while (keyPressed != ConsoleKey.S);
 
             StreamWriter output = new StreamWriter(FileNamePath);
@@ -94,27 +96,10 @@ namespace PerformanceTracker
 
             do
             {
-                Console.Clear();
-                var NextGame = new Game();
-                NextGame.PlayedOn = DateTime.Now;
-                do
-                {
-                    Console.WriteLine("Please enter the map name:");
-                    Console.WriteLine(Maps.List());
-                    string input = Console.ReadLine();
-                    NextGame.Map = Maps.ValidateMap(input);
-                } while (NextGame.Map == null);
-                Console.WriteLine("Please enter the number of deaths:");
-                NextGame.Deaths = int.Parse(Console.ReadLine()); ;
-                Console.WriteLine("Please enter the First Hero:");
-                Hero firstHero = new Hero();
-                firstHero.SetHero(Console.ReadLine());
-                NextGame.Heroes.Add(firstHero);
-                Console.WriteLine("Please enter the game length");
-                NextGame.GameTime = TimeSpan.Parse("0:" + Console.ReadLine().Replace('.', ':'));
-                Console.WriteLine("Please enter your SR at the end of this game");
-                NextGame.SR = int.Parse(Console.ReadLine());
+                GameCreator NextGame = new GameCreator();
+                NextGame.CreateGame();
                 games.Add(NextGame);
+
                 Console.WriteLine("Press X to exit, or any key to add a new game detail");
                 exitCheck = Console.ReadKey().Key;
             } while (exitCheck != ConsoleKey.X);
@@ -161,6 +146,37 @@ namespace PerformanceTracker
             }
             Common.RowOfDashes();
             Console.WriteLine();
+        }
+
+        static void AddNewGame()
+        {
+            GameCreator NewGame = new GameCreator();
+            NewGame.CreateGame();
+            games.Add(NewGame);
+        }
+
+        static void GamesOverview()
+        {
+            Console.Clear();
+            int SR_Difference = games[games.Count-1].SR - games[0].SR;
+            int winCount = 0;
+            int lossCount = 0;
+            int drawCount = 0;
+            for(int i=1; i<games.Count;i++)
+            {
+                if (games[i].SR == games[i - 1].SR)
+                    drawCount++;
+                if (games[i].SR > games[i - 1].SR)
+                    winCount++;
+                if (games[i].SR < games[i - 1].SR)
+                    lossCount++;
+            }
+            double winRate = ((double)winCount / (winCount + lossCount)*100);
+            winRate = Math.Round(winRate, 1);
+
+            Console.WriteLine($"Wins: {winCount} Losses: {lossCount} Draws: {drawCount}");
+            Console.WriteLine($"Win Rate: {winRate.ToString()}");
+            Console.WriteLine($"Total SR change this season: {SR_Difference}");
         }
     }
 }
