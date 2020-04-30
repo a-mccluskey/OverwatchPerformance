@@ -4,6 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -158,25 +159,58 @@ namespace PerformanceTracker
         static void GamesOverview()
         {
             Console.Clear();
+            
             int SR_Difference = games[games.Count-1].SR - games[0].SR;
             int winCount = 0;
             int lossCount = 0;
             int drawCount = 0;
-            for(int i=1; i<games.Count;i++)
+
+            Dictionary<object, WLDStats> DayStats = new Dictionary<object, WLDStats>();
+            List<WLDStats> MapStats = new List<WLDStats>();
+
+
+            foreach (var Day in Enum.GetValues(typeof(DayOfWeek)))
+            {
+                DayStats.Add(Day, new WLDStats());
+            }
+            //DayStats.Add(new WLDStats(""));
+
+            for (int i=1; i<games.Count;i++)
             {
                 if (games[i].SR == games[i - 1].SR)
+                {
                     drawCount++;
+                    DayStats[games[i].PlayedOn.DayOfWeek].IncreaseDraw();
+                }
                 if (games[i].SR > games[i - 1].SR)
+                {
                     winCount++;
+                    DayStats[games[i].PlayedOn.DayOfWeek].IncreaseWins();
+                }
                 if (games[i].SR < games[i - 1].SR)
+                {
                     lossCount++;
+                    DayStats[games[i].PlayedOn.DayOfWeek].IncreaseLoss();
+                }
             }
             double winRate = ((double)winCount / (winCount + lossCount)*100);
             winRate = Math.Round(winRate, 1);
+            string HighestDay = "";
+            int daywincount = 0;
+            foreach (var Day in DayStats)
+            {
+                if (Day.Value.GetWins() > daywincount)
+                {
+                    HighestDay = Day.Key.ToString();
+                    daywincount = Day.Value.GetWins();
+                }
+            }
 
             Console.WriteLine($"Wins: {winCount} Losses: {lossCount} Draws: {drawCount}");
             Console.WriteLine($"Win Rate: {winRate.ToString()}");
             Console.WriteLine($"Total SR change this season: {SR_Difference}");
+
+            Console.WriteLine($"Best Day for wins is {HighestDay} With {daywincount} Wins");
         }
     }
 }

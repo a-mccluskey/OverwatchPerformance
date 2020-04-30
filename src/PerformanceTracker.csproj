@@ -49,6 +49,7 @@
     <Compile Include="GameCreator.cs" />
     <Compile Include="Hero.cs" />
     <Compile Include="Maps.cs" />
+    <Compile Include="WLDStats.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
