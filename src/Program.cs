@@ -166,14 +166,18 @@ namespace PerformanceTracker
             int drawCount = 0;
 
             Dictionary<object, WLDStats> DayStats = new Dictionary<object, WLDStats>();
-            List<WLDStats> MapStats = new List<WLDStats>();
+            Dictionary<string, WLDStats> MapStats = new Dictionary<string, WLDStats>();
 
 
             foreach (var Day in Enum.GetValues(typeof(DayOfWeek)))
             {
                 DayStats.Add(Day, new WLDStats());
             }
-            //DayStats.Add(new WLDStats(""));
+            foreach (var _map in Maps.AvailableMaps)
+            {
+                MapStats.Add(_map, new WLDStats());
+            }
+
 
             for (int i=1; i<games.Count;i++)
             {
@@ -181,22 +185,28 @@ namespace PerformanceTracker
                 {
                     drawCount++;
                     DayStats[games[i].PlayedOn.DayOfWeek].IncreaseDraw();
+                    MapStats[games[i].Map].IncreaseDraw();
                 }
                 if (games[i].SR > games[i - 1].SR)
                 {
                     winCount++;
                     DayStats[games[i].PlayedOn.DayOfWeek].IncreaseWins();
+                    MapStats[games[i].Map].IncreaseWins();
                 }
                 if (games[i].SR < games[i - 1].SR)
                 {
                     lossCount++;
                     DayStats[games[i].PlayedOn.DayOfWeek].IncreaseLoss();
+                    MapStats[games[i].Map].IncreaseLoss();
                 }
             }
             double winRate = ((double)winCount / (winCount + lossCount)*100);
             winRate = Math.Round(winRate, 1);
+
             string HighestDay = "";
             int daywincount = 0;
+            string HighestDayRate = "";
+            int DayWinRate = 0;
             foreach (var Day in DayStats)
             {
                 if (Day.Value.GetWins() > daywincount)
@@ -204,13 +214,45 @@ namespace PerformanceTracker
                     HighestDay = Day.Key.ToString();
                     daywincount = Day.Value.GetWins();
                 }
+
+                if (Day.Value.GetWinRate() > DayWinRate)
+                {
+                    HighestDayRate = Day.Key.ToString();
+                    DayWinRate = Day.Value.GetWinRate();
+                }
             }
 
+            string HighestMap = "";
+            string HighestMapRate = "";
+            int mapWinCount = 0;
+            int mapWinRate = 0;
+            foreach (var _map in MapStats)
+            {
+                if (_map.Value.GetWins()>mapWinCount)
+                {
+                    HighestMap = _map.Key;
+                    mapWinCount = _map.Value.GetWins();
+                }
+                if (_map.Value.GetWinRate() > mapWinRate)
+                {
+                    HighestMapRate = _map.Key;
+                    mapWinRate = _map.Value.GetWinRate();
+                }
+            }
+
+            Common.RowOfDashes();
             Console.WriteLine($"Wins: {winCount} Losses: {lossCount} Draws: {drawCount}");
             Console.WriteLine($"Win Rate: {winRate.ToString()}");
             Console.WriteLine($"Total SR change this season: {SR_Difference}");
 
+            Common.RowOfDashes();
             Console.WriteLine($"Best Day for wins is {HighestDay} With {daywincount} Wins");
+            Console.WriteLine($"Best Day for win rate is {HighestDayRate} With {DayWinRate}%");
+
+            Common.RowOfDashes();
+            Console.WriteLine($"Best Map for wins is {HighestMap} With {mapWinCount} Wins");
+            Console.WriteLine($"Best Day for win rate is {HighestMapRate} With {mapWinRate}%");
+            Common.RowOfDashes();
         }
     }
 }

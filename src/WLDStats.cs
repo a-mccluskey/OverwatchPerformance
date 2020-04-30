@@ -13,22 +13,26 @@ namespace PerformanceTracker
         private int GamesWon = 0;
         private int GamesLost = 0;
         private int GamesDrawn = 0;
+        private int winRatePercent = 50;
         
 
         public void IncreaseWins()
         {
             GamesPlayed++;
             GamesWon++;
+            winRatePercent = (100* GamesWon) / (GamesWon+GamesLost);
         }
         public void IncreaseLoss()
         {
             GamesPlayed++;
-            GamesWon++;
+            GamesLost++;
+            winRatePercent = (100*GamesWon) / (GamesWon + GamesLost);
         }
         public void IncreaseDraw()
         {
             GamesPlayed++;
-            GamesWon++;
+            GamesDrawn++;
+            //the Winrate will be the same if we drawez 
         }
 
         public int GetPlayed()
@@ -46,6 +50,10 @@ namespace PerformanceTracker
         public int GetDraw()
         {
             return GamesDrawn;
+        }
+        public int GetWinRate()
+        {
+            return winRatePercent;
         }
     }
 }
