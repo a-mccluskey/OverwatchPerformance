@@ -167,6 +167,7 @@ namespace PerformanceTracker
 
             Dictionary<object, WLDStats> DayStats = new Dictionary<object, WLDStats>();
             Dictionary<string, WLDStats> MapStats = new Dictionary<string, WLDStats>();
+            Dictionary<int, WLDStats> HourStats = new Dictionary<int, WLDStats>();
 
 
             foreach (var Day in Enum.GetValues(typeof(DayOfWeek)))
@@ -177,7 +178,10 @@ namespace PerformanceTracker
             {
                 MapStats.Add(_map, new WLDStats());
             }
-
+            for (int hour=0; hour<=23; hour++)
+            {
+                HourStats.Add(hour, new WLDStats());
+            }
 
             for (int i=1; i<games.Count;i++)
             {
@@ -186,18 +190,21 @@ namespace PerformanceTracker
                     drawCount++;
                     DayStats[games[i].PlayedOn.DayOfWeek].IncreaseDraw();
                     MapStats[games[i].Map].IncreaseDraw();
+                    HourStats[games[i].PlayedOn.Hour].IncreaseDraw();
                 }
                 if (games[i].SR > games[i - 1].SR)
                 {
                     winCount++;
                     DayStats[games[i].PlayedOn.DayOfWeek].IncreaseWins();
                     MapStats[games[i].Map].IncreaseWins();
+                    HourStats[games[i].PlayedOn.Hour].IncreaseWins();
                 }
                 if (games[i].SR < games[i - 1].SR)
                 {
                     lossCount++;
                     DayStats[games[i].PlayedOn.DayOfWeek].IncreaseLoss();
                     MapStats[games[i].Map].IncreaseLoss();
+                    HourStats[games[i].PlayedOn.Hour].IncreaseLoss();
                 }
             }
             double winRate = ((double)winCount / (winCount + lossCount)*100);
@@ -208,6 +215,8 @@ namespace PerformanceTracker
 
             var orderedMapsByTotalWins = MapStats.OrderByDescending(_map => _map.Value.GetWins()).ToList();
             var orderedMapsByWinRate = MapStats.OrderByDescending(_map => _map.Value.GetWinRate()).ToList();
+
+            var orderedHoursByWinRate = HourStats.OrderByDescending(_hour => _hour.Value.GetWinRate()).ToList();
 
             Common.RowOfDashes();
             Console.WriteLine($"Wins: {winCount} Losses: {lossCount} Draws: {drawCount}");
@@ -222,7 +231,18 @@ namespace PerformanceTracker
             Common.RowOfDashes();
             Console.WriteLine($"Best Map for wins is {orderedMapsByTotalWins[0].Key} With {orderedMapsByTotalWins[0].Value.GetWins()} Wins at {orderedMapsByTotalWins[0].Value.GetWinRate()}%");
             Console.WriteLine($"Best Map for win rate is {orderedMapsByWinRate[0].Key} At {orderedMapsByWinRate[0].Value.GetWinRate()}% for a total of {orderedMapsByWinRate[0].Value.GetWins()} Wins");
+            
             Common.RowOfDashes();
+            Console.WriteLine($"Best Time of day is {orderedHoursByWinRate[0].Key} At {orderedHoursByWinRate[0].Value.GetWinRate()}%");
+            Console.WriteLine($"2nd Best Time of day is {orderedHoursByWinRate[1].Key} At {orderedHoursByWinRate[1].Value.GetWinRate()}%");
+            Console.WriteLine($"3rd Best Time of day is {orderedHoursByWinRate[2].Key} At {orderedHoursByWinRate[2].Value.GetWinRate()}%");
+            Common.RowOfDashes();
+            Console.WriteLine("Hourly breakdown:");
+
+            foreach (var _hour in orderedHoursByWinRate)
+            {
+                Console.WriteLine($"| {_hour.Key} | {_hour.Value.GetWinRate()}% |");
+            }
         }
     }
 }
