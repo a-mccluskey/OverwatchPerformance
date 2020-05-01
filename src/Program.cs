@@ -119,13 +119,16 @@ namespace PerformanceTracker
             Console.Write("     ----      |           ----        |");//DP10 & TPlayed
             Console.WriteLine();
 
-            for (int i = 1; i<games.Count; i++)
+            double AvgDeathsPerTenAllGames = Common.CalculateTotalDeathsPerTen(games);
+            double AvgDeathsAllGames = Common.CalculateAvgDeathsAllGames(games);
+
+            for (int i = 1; i < games.Count; i++)
             {
                 Console.Write($"| {games[i].SR} |");
                 int diffBetweenGames = games[i].SR - games[i - 1].SR;
                 if (diffBetweenGames == 0)
                     Console.Write(" ---- ");
-                string colorText = diffBetweenGames.ToString()+" ";
+                string colorText = diffBetweenGames.ToString() + " ";
                 colorText = colorText.PadLeft(6);
                 if (diffBetweenGames > 0)
                     Common.WriteTextInGreen(colorText);
@@ -133,8 +136,26 @@ namespace PerformanceTracker
                     Common.WriteTextInRed(colorText);
                 Console.Write($"|{games[i].Map.PadLeft(21)}|");
                 Console.Write(games[i].GameTime.ToString("mm':'ss' '").PadLeft(13) + "|");
-                Console.Write((games[i].Deaths.ToString()+" ").PadLeft(8) + "|");
-                Console.Write(Common.DeathsPerTen(games[i].Deaths, games[i].GameTime).PadLeft(15)+ "|");
+                if (games[i].Deaths > AvgDeathsAllGames)
+                {
+                    Common.WriteTextInRed((games[i].Deaths.ToString() + " ").PadLeft(8));
+                }
+                else
+                {
+                    Common.WriteTextInGreen((games[i].Deaths.ToString() + " ").PadLeft(8));
+                }
+                Console.Write("|");
+
+                double DeathPerTenCurGame = double.Parse(Common.DeathsPerTen(games[i].Deaths, games[i].GameTime));
+                if (DeathPerTenCurGame > AvgDeathsPerTenAllGames)
+                {
+                    Common.WriteTextInRed(DeathPerTenCurGame.ToString().PadLeft(15));
+                }
+                else
+                {
+                    Common.WriteTextInGreen(DeathPerTenCurGame.ToString().PadLeft(15));
+                }
+                Console.Write("|");
                 Console.WriteLine($" {games[i].PlayedOn.ToString().PadLeft(21)} |");
                 if(i%25==0)
                 {
