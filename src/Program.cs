@@ -16,15 +16,21 @@ namespace PerformanceTracker
 
         static void Main(string[] args)
         {
-            string FileName = "SeasonData.csv";
+            string FileName = null;
+            if(args.Length >0)
+                FileName = args[0];
+            else
+                FileName = "SeasonData.csv";
             string FileNamePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + FileName;
+            IDataSource DataSource = new FileDataSource(FileNamePath);
 
             // Removed due to the map rotation changing mid season 21
             //Maps.LoadMaps((string)ConfigurationManager.AppSettings["Map"]);
             Maps.ExcludedMaps((string)ConfigurationManager.AppSettings["ExcludedMaps"]);
             games = new List<Game>();
-            if (File.Exists(FileNamePath))
-                ReadExistingFileIn(FileNamePath);
+            
+            if (DataSource.VerifySourceExists())
+                games = DataSource.ReadExistingGamesSource();
             else
                 PopulateGameData();
 
@@ -44,47 +50,10 @@ namespace PerformanceTracker
                     AddNewGame();
             } while (keyPressed != ConsoleKey.S);
 
-            StreamWriter output = new StreamWriter(FileNamePath);
-            output.WriteLine("SR, Map, Deaths, Game Length, Played On, Hero");
-            output.Flush();
-            foreach (var game in games)
-            {
-                output.WriteLine($"{game}");
-                output.Flush();
-            }
-            output.Close();
+            DataSource.SaveGamesToDataSource(games);
+            
             Console.WriteLine("File Saved.\nPress Any key to exit");
             Console.ReadKey();
-        }
-
-        static void ReadExistingFileIn(string FileNamePath)
-        {
-            StreamReader input = new StreamReader(FileNamePath);
-            input.ReadLine(); //We ignore this first line - as it's the header
-            string initalSR = input.ReadLine().Split(',')[0];
-            var FirstGame = new Game();
-            FirstGame.SR = int.Parse(initalSR);
-            games.Add(FirstGame);
-            Game NextGame;
-            while (!input.EndOfStream)
-            {
-                NextGame = new Game();
-                string[] currentLine = input.ReadLine().Split(',');
-                NextGame.SR = int.Parse(currentLine[0]);
-                NextGame.Map = currentLine[1].Trim();
-                NextGame.Deaths = int.Parse(currentLine[2]);
-                NextGame.GameTime = TimeSpan.Parse("0:" + currentLine[3].Trim());
-                NextGame.PlayedOn = DateTime.Parse(currentLine[4]);
-                string[] HeroList = currentLine[5].Split(';');
-                foreach (var HeroString in HeroList)
-                {
-                    var Hero = new Hero();
-                    Hero.SetHero(HeroString.Trim());
-                    NextGame.Heroes.Add(Hero);
-                }
-                games.Add(NextGame);
-            }
-            input.Close();
         }
 
         static void PopulateGameData()

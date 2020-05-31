@@ -45,9 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common.cs" />
+    <Compile Include="FileDataSource.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameCreator.cs" />
     <Compile Include="Hero.cs" />
+    <Compile Include="IDataSource.cs" />
     <Compile Include="Maps.cs" />
     <Compile Include="WLDStats.cs" />
     <Compile Include="Program.cs" />
