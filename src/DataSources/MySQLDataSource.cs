@@ -43,6 +43,7 @@ namespace PerformanceTracker.DataSources
             var FirstGame = new Game();
             reader.Read();
             FirstGame.SR = int.Parse(reader.GetString("SR"));
+            FirstGame.PlayedOn = DateTime.Parse(reader.GetString("Played_On"));
             games.Add(FirstGame);
 
             while (reader.Read())
@@ -69,7 +70,31 @@ namespace PerformanceTracker.DataSources
         }
         public void SaveGamesToDataSource(List<Game> games)
         {
-            //TODO
+            //TODO Delete all entries in the table
+            //Or search through all the games for that come after the last game in the DB
+
+            foreach(var game in games)
+            {
+                //Write the single game
+                string saveGame = "INSERT into gamestats (SR, Map, Deaths, Game_Length, Played_On, Hero) VALUES " +
+                    $"('{game.SR}', '{game.Map}', '{game.Deaths}', '{game.GameTime}', '{game.PlayedOn.ToString("yyyy-MM-dd HH:mm:ss")}', '{game.HeroesToString()}')";
+
+                MySqlCommand saveQuery = new MySqlCommand(saveGame, this.connection);
+                try
+                {
+                    //saveQuery.Connection = this.connection;
+                    saveQuery.ExecuteNonQuery();
+                }
+                catch(Exception e)
+                {
+                    if (!e.Message.Contains("Duplicate entry "))
+                        Console.WriteLine(e.Message);
+                    else
+                        break;
+                }
+                    
+            }
+            //Disconnect
         }
         public bool VerifySourceExists()
         {

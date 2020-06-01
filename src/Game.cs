@@ -81,7 +81,7 @@ namespace PerformanceTracker
 
         public List<Hero> Heroes = new List<Hero>();
 
-        private string HeroesToString()
+        public string HeroesToString()
         {
             string output = "";
             foreach (var hero in this.Heroes)
