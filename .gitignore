@@ -6,3 +6,4 @@
 */obj/Debug/PerformanceTracker.pdb
 *.cache
 /src/obj/Debug/PerformanceTracker.csproj.CopyComplete
+/packages
