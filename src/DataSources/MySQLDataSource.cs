@@ -70,27 +70,30 @@ namespace PerformanceTracker.DataSources
         }
         public void SaveGamesToDataSource(List<Game> games)
         {
-            //TODO Delete all entries in the table
-            //Or search through all the games for that come after the last game in the DB
-
             foreach(var game in games)
             {
                 //Write the single game
-                string saveGame = "INSERT into gamestats (SR, Map, Deaths, Game_Length, Played_On, Hero) VALUES " +
-                    $"('{game.SR}', '{game.Map}', '{game.Deaths}', '{game.GameTime}', '{game.PlayedOn.ToString("yyyy-MM-dd HH:mm:ss")}', '{game.HeroesToString()}')";
-
-                MySqlCommand saveQuery = new MySqlCommand(saveGame, this.connection);
+                //Use Parameterised version to prevent King's Row being a problem
+                MySqlCommand comm = connection.CreateCommand();
+                comm.CommandText = "INSERT into gamestats (SR, Map, Deaths, Game_Length, Played_On, Hero) VALUES " +
+                    "(@SR, @Map, @Deaths, @GameTime, @PlayedOn, @Hero)";
+                comm.Parameters.AddWithValue("@SR", game.SR);
+                comm.Parameters.AddWithValue("@Map", game.Map);
+                comm.Parameters.AddWithValue("@Deaths", game.Deaths);
+                comm.Parameters.AddWithValue("@GameTime", game.GameTime);
+                comm.Parameters.AddWithValue("@PlayedOn", game.PlayedOn.ToString("yyyy-MM-dd HH:mm:ss"));
+                comm.Parameters.AddWithValue("@Hero", game.HeroesToString());
                 try
                 {
-                    //saveQuery.Connection = this.connection;
-                    saveQuery.ExecuteNonQuery();
+                    comm.ExecuteNonQuery();
                 }
                 catch(Exception e)
                 {
                     if (!e.Message.Contains("Duplicate entry "))
+                    {
                         Console.WriteLine(e.Message);
-                    else
-                        break;
+                        throw e;
+                    }
                 }
                     
             }
