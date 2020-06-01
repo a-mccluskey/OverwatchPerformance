@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PerformanceTracker.DataSources;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -16,6 +17,9 @@ namespace PerformanceTracker
 
         static void Main(string[] args)
         {
+            MySQLDataSource source = new MySQLDataSource();
+            source.ReadExistingGamesSource();
+
             string FileName = null;
             if(args.Length >0)
                 FileName = args[0];
@@ -29,6 +33,7 @@ namespace PerformanceTracker
             Maps.ExcludedMaps((string)ConfigurationManager.AppSettings["ExcludedMaps"]);
             games = new List<Game>();
             
+            //Check that the data source is readable, and that it has some data in it
             if (DataSource.VerifySourceExists())
                 games = DataSource.ReadExistingGamesSource();
             else

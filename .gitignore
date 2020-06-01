@@ -5,3 +5,4 @@
 */obj/Release/PerformanceTracker.csproj.CoreCompileInputs.cache
 */obj/Debug/PerformanceTracker.pdb
 *.cache
+/src/obj/Debug/PerformanceTracker.csproj.CopyComplete
