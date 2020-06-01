@@ -17,16 +17,34 @@ namespace PerformanceTracker
 
         static void Main(string[] args)
         {
-            MySQLDataSource source = new MySQLDataSource();
-            source.ReadExistingGamesSource();
+            IDataSource DataSource = null;
 
-            string FileName = null;
-            if(args.Length >0)
-                FileName = args[0];
-            else
-                FileName = "SeasonData.csv";
-            string FileNamePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + FileName;
-            IDataSource DataSource = new FileDataSource(FileNamePath);
+            string FileName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\";
+            try
+            {
+                if (args.Length == 0)
+                {
+                    FileName += "SeasonData.csv"; //Default Filename
+                    DataSource = new FileDataSource(FileName);
+                }
+                else
+                {
+                    if (args[0] == "-db")
+                        DataSource = new MySQLDataSource();
+                    else
+                    {
+                        FileName += args[0];
+                        DataSource = new FileDataSource(FileName);
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Error: "+e.Message+ " Unable To continue");
+                Console.WriteLine("\nPress any key to close");
+                Console.ReadKey();
+                Environment.Exit(-1);
+            }
 
             // Removed due to the map rotation changing mid season 21
             //Maps.LoadMaps((string)ConfigurationManager.AppSettings["Map"]);

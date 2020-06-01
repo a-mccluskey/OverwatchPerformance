@@ -10,12 +10,12 @@ using MySql.Data.MySqlClient;
 
 namespace PerformanceTracker.DataSources
 {
-    class MySQLDataSource /*: IDataSource*/
+    class MySQLDataSource : IDataSource
     {
 
         public MySqlConnection connection;
 
-        public void init()
+        public MySQLDataSource()
         {
             string server = "localhost";
             string database = "ow_stats";
@@ -25,24 +25,62 @@ namespace PerformanceTracker.DataSources
             connectionString = "SERVER=" + server + ";" + "DATABASE=" +
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
             connection = new MySqlConnection(connectionString);
-            connection.Open();
+            try
+            {
+                connection.Open();
+            }
+            catch(Exception e)
+            {
+                throw new Exception("Unable to connect to Database. Error: " + e.Message);
+            }
         }
         public List<Game> ReadExistingGamesSource()
         {
-            init();
             string query = "SELECT * FROM gamestats";
             MySqlCommand cmd = new MySqlCommand(query, connection);
             MySqlDataReader reader = cmd.ExecuteReader();
-            List<object> srs = new List<object>();
+            List<Game> games = new List<Game>();
+            var FirstGame = new Game();
+            reader.Read();
+            FirstGame.SR = int.Parse(reader.GetString("SR"));
+            games.Add(FirstGame);
+
             while (reader.Read())
             {
-                srs.Add(reader.GetValue(2));
+                Game sglGame = new Game();
+                sglGame.SR = int.Parse(reader.GetString("SR"));
+                
+                sglGame.Map = reader.GetString("Map");
+                sglGame.Deaths = int.Parse(reader.GetString("Deaths"));
+                sglGame.GameTime = TimeSpan.Parse(reader.GetString("Game_Length"));
+                sglGame.PlayedOn = DateTime.Parse(reader.GetString("Played_On"));
+                string[] HeroList = reader.GetString("Hero").Split(';');
+                foreach (var HeroString in HeroList)
+                {
+                    var Hero = new Hero();
+                    Hero.SetHero(HeroString.Trim());
+                    sglGame.Heroes.Add(Hero);
+                }
+
+                games.Add(sglGame);
             }
-            return null;
+            reader.Close();
+            return games;
         }
         public void SaveGamesToDataSource(List<Game> games)
         {
             //TODO
+        }
+        public bool VerifySourceExists()
+        {
+            string query = "SELECT * FROM gamestats";
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader reader = cmd.ExecuteReader();
+
+            //Has to be in a separate variable as reader.HasRows is false as soon as the connection is closed
+            bool HasRows = reader.HasRows;
+            reader.Close();
+            return HasRows;
         }
     }
 }
