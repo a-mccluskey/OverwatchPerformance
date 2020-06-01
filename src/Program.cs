@@ -17,8 +17,11 @@ namespace PerformanceTracker
 
         static void Main(string[] args)
         {
-            IDataSource DataSource = null;
+            if (args.Contains("-help"))
+                ApplicationHelp();
 
+            //Setup the file to read in
+            IDataSource DataSource = null;
             string FileName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\";
             try
             {
@@ -29,7 +32,7 @@ namespace PerformanceTracker
                 }
                 else
                 {
-                    if (args[0] == "-db")
+                    if (args.Contains("-db"))
                         DataSource = new MySQLDataSource();
                     else
                     {
@@ -256,6 +259,14 @@ namespace PerformanceTracker
             {
                 Console.WriteLine($"| {_hour.Key} | {_hour.Value.GetWinRate()}% |");
             }
+        }
+
+        static void ApplicationHelp()
+        {
+            Console.WriteLine("Overwatch Performance tracker:\n To use a MySQL database connection use -db.");
+            //Console.WriteLine(" To use an alternative file use -f=FILENAME");
+            Console.WriteLine(" To display this help -help");
+            Environment.Exit(1);
         }
     }
 }
