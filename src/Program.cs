@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -290,12 +291,36 @@ namespace PerformanceTracker
         {
             DirectoryInfo directory =  new DirectoryInfo(DirectoryPath);
             var fileArray = directory.GetFiles("stats_*.csv"); //Gives the full filename
+            string backupFolder = DirectoryPath + "Backup\\";
+            string backupFile = DirectoryPath + "Backup"+ DateTime.Now.ToString("ddMMyy")+".zip";
+            Directory.CreateDirectory(backupFolder);
             foreach (var fileName in fileArray)
             {
-                //fileName.
+                fileName.CopyTo(backupFolder+fileName.Name);
             }
-            //string[] oDirectories = Directory.GetDirectories(startPath, "");
-            //Console.WriteLine(oDirectories.Length.ToString());
+            ZipFile.CreateFromDirectory(backupFolder, backupFile);
+            var srcArray = new DirectoryInfo(backupFolder).GetFiles("stats_*.csv");
+            foreach (var fileName in srcArray)
+            {
+                fileName.Delete();
+            }
+            Directory.Delete(backupFolder);
+            Console.Clear();
+            Console.WriteLine("Compressed backup file created, Delete uncompressed archives? Y / N");
+            ConsoleKey exit;
+            do
+            {
+                exit = Console.ReadKey().Key;
+                if (exit==ConsoleKey.Y)
+                {
+                    foreach(var fileName in fileArray)
+                    {
+                        fileName.Delete();
+                    }    
+                }
+                
+            } while (exit != ConsoleKey.Y && exit != ConsoleKey.N) ;
+            Console.Clear();
         }
     }
 }
