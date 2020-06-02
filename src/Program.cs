@@ -15,6 +15,8 @@ namespace PerformanceTracker
     {
         private static List<Game> games;
 
+        private static readonly string DirectoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)+"\\";
+
         static void Main(string[] args)
         {
             if (args.Contains("-help"))
@@ -22,7 +24,7 @@ namespace PerformanceTracker
 
             //Setup the file to read in
             IDataSource DataSource = null;
-            string FileName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\";
+            string FileName = DirectoryPath;
             try
             {
                 if (args.Length == 0)
@@ -63,7 +65,9 @@ namespace PerformanceTracker
             ConsoleKey keyPressed;
             do
             {
-                Console.WriteLine("Press S to save the games details\nA to add a new game\nD to display the current stats\nO to display an overview\nX to quit without saving");
+                Console.WriteLine("Please choose from the following options:\n");
+                Console.WriteLine("(A) to Add a new game\n(B) to Backup the game data\n(C) to Compress all backups\n(D) to Display the current stats\n" +
+                    "(O) to display an Overview\n(S) to Save the games details\n(X) to eXit without saving");
                 keyPressed = Console.ReadKey().Key;
 
                 if (keyPressed == ConsoleKey.X)
@@ -74,6 +78,10 @@ namespace PerformanceTracker
                     GamesOverview();
                 if (keyPressed == ConsoleKey.A)
                     AddNewGame();
+                if (keyPressed == ConsoleKey.B)
+                    ArchiveGameData();
+                if (keyPressed == ConsoleKey.C)
+                    ArchiveToZipFile();
             } while (keyPressed != ConsoleKey.S);
 
             DataSource.SaveGamesToDataSource(games);
@@ -267,6 +275,20 @@ namespace PerformanceTracker
             //Console.WriteLine(" To use an alternative file use -f=FILENAME");
             Console.WriteLine(" To display this help -help");
             Environment.Exit(1);
+        }
+
+        static void ArchiveGameData()
+        {
+            string archiveFileName = "stats_" + DateTime.Now.ToString("ddmmyy")+".csv";
+            var backup = new FileDataSource(DirectoryPath+archiveFileName);
+            backup.SaveGamesToDataSource(games);
+            Console.Clear();
+            Console.WriteLine("Backup saved to: " + DirectoryPath + archiveFileName);
+        }
+
+        static void ArchiveToZipFile()
+        {
+
         }
     }
 }
