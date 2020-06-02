@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace PerformanceTracker
 {
+    public enum TankHero { DVa, Orisa, Reinhardt, Roadhog, Sigma, Winston, WreckingBall, Zarya }
+
+    public enum DamageHero {    Ashe, Bastion, Doomfist, Genji, Hanzo, Junkrat, McCree, Mei, Pharah,
+                                Reaper, Soldier76, Sombra, Symmetra, Torbjorn, Tracer, Widowmaker }
+
     public enum SupportHero { Ana, Baptiste, Brigitte, Lucio, Mercy, Moira, Zenyatta }
+
     class Hero
     {
         public Hero()

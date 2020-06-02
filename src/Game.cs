@@ -7,9 +7,12 @@ using System.Threading.Tasks;
 
 namespace PerformanceTracker
 {
+    public enum GameTypes { Tank, Damage, Support, OpenQueue }
+
     class Game
     {
         private int _SR;
+
         public int SR
         {
             get => _SR;
@@ -21,6 +24,7 @@ namespace PerformanceTracker
                     throw new Exception("SR must be between 0 and 5000");
             }
         }
+
         private int _Deaths;
 
         public int Deaths
@@ -49,20 +53,6 @@ namespace PerformanceTracker
             }
         }
 
-        private int _TotalHealing;
-
-        public int TotalHealing
-        {
-            get => _TotalHealing;
-            set
-            {
-                if (value >= 0)
-                    _TotalHealing = value;
-                else
-                    throw new Exception("Total healing must be positive");
-            }
-        }
-
         private TimeSpan _GameTime;
         
         public TimeSpan GameTime
@@ -76,6 +66,8 @@ namespace PerformanceTracker
                     throw new Exception("Game must be at least 60 seconds but less than 45 minutes");
             }
         }
+
+        public GameTypes GameType;
 
         public DateTime PlayedOn;
 
