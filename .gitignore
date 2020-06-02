@@ -7,3 +7,5 @@
 *.cache
 /src/obj/Debug/PerformanceTracker.csproj.CopyComplete
 /packages
+/src/bin/Release
+/src/obj/Release
