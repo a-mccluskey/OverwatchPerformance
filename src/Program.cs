@@ -67,7 +67,7 @@ namespace PerformanceTracker
             {
                 Console.WriteLine("Please choose from the following options:\n");
                 Console.WriteLine("(A) to Add a new game\n(B) to Backup the game data\n(C) to Compress all backups\n(D) to Display the current stats\n" +
-                    "(O) to display an Overview\n(S) to Save the games details\n(X) to eXit without saving");
+                    "(O) to display an Overview\n(S) to Save the games details\n(X) to Exit without saving");
                 keyPressed = Console.ReadKey().Key;
 
                 if (keyPressed == ConsoleKey.X)
@@ -279,7 +279,7 @@ namespace PerformanceTracker
 
         static void ArchiveGameData()
         {
-            string archiveFileName = "stats_" + DateTime.Now.ToString("ddmmyy")+".csv";
+            string archiveFileName = "stats_" + DateTime.Now.ToString("ddMMyy")+".csv";
             var backup = new FileDataSource(DirectoryPath+archiveFileName);
             backup.SaveGamesToDataSource(games);
             Console.Clear();
@@ -288,7 +288,14 @@ namespace PerformanceTracker
 
         static void ArchiveToZipFile()
         {
-
+            DirectoryInfo directory =  new DirectoryInfo(DirectoryPath);
+            var fileArray = directory.GetFiles("stats_*.csv"); //Gives the full filename
+            foreach (var fileName in fileArray)
+            {
+                //fileName.
+            }
+            //string[] oDirectories = Directory.GetDirectories(startPath, "");
+            //Console.WriteLine(oDirectories.Length.ToString());
         }
     }
 }
