@@ -13,7 +13,7 @@ namespace PerformanceTracker
         private int GamesWon = 0;
         private int GamesLost = 0;
         private int GamesDrawn = 0;
-        private int winRatePercent = 01;
+        private int winRatePercent = 0;
         
 
         public void IncreaseWins()

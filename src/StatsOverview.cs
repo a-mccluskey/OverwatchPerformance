@@ -24,6 +24,9 @@ namespace PerformanceTracker
 
         public List<KeyValuePair<int, WLDStats>> orderedHoursByWinRate;
 
+        public List<KeyValuePair<object, WLDStats>> orderedHeroByTotalWins;
+        public List<KeyValuePair<object, WLDStats>> orderedHeroByWinRate;
+
         StatsOverview()
         { }
 
@@ -38,6 +41,7 @@ namespace PerformanceTracker
             Dictionary<object, WLDStats> DayStats = new Dictionary<object, WLDStats>();
             Dictionary<string, WLDStats> MapStats = new Dictionary<string, WLDStats>();
             Dictionary<int, WLDStats> HourStats = new Dictionary<int, WLDStats>();
+            Dictionary<object, WLDStats> HeroStats = new Dictionary<object, WLDStats>();
 
             //Initalise the dictionaries
             foreach (var Day in Enum.GetValues(typeof(DayOfWeek)))
@@ -52,6 +56,10 @@ namespace PerformanceTracker
             {
                 HourStats.Add(hour, new WLDStats());
             }
+            foreach (var hero in Enum.GetValues(typeof(SupportHero)))
+            {
+                HeroStats.Add(hero, new WLDStats());
+            }
 
             //Go through all the games and get W/L/D counts for a particular metric
             //Eg. 10W 6L 1D for a Tuesday
@@ -63,6 +71,10 @@ namespace PerformanceTracker
                     DayStats[games[i].PlayedOn.DayOfWeek].IncreaseDraw();
                     MapStats[games[i].Map].IncreaseDraw();
                     HourStats[games[i].PlayedOn.Hour].IncreaseDraw();
+                    foreach (var hero in games[i].Heroes)
+                    {
+                        HeroStats[hero.hero].IncreaseDraw();
+                    }
                 }
                 if (games[i].SR > games[i - 1].SR)
                 {
@@ -70,6 +82,10 @@ namespace PerformanceTracker
                     DayStats[games[i].PlayedOn.DayOfWeek].IncreaseWins();
                     MapStats[games[i].Map].IncreaseWins();
                     HourStats[games[i].PlayedOn.Hour].IncreaseWins();
+                    foreach (var hero in games[i].Heroes)
+                    {
+                        HeroStats[hero.hero].IncreaseWins();
+                    }
                 }
                 if (games[i].SR < games[i - 1].SR)
                 {
@@ -77,6 +93,10 @@ namespace PerformanceTracker
                     DayStats[games[i].PlayedOn.DayOfWeek].IncreaseLoss();
                     MapStats[games[i].Map].IncreaseLoss();
                     HourStats[games[i].PlayedOn.Hour].IncreaseLoss();
+                    foreach(var hero in games[i].Heroes)
+                    {
+                        HeroStats[hero.hero].IncreaseLoss();
+                    }
                 }
             }
 
@@ -94,6 +114,9 @@ namespace PerformanceTracker
             orderedMapsByWinRate = MapStats.OrderByDescending(_map => _map.Value.GetWinRate()).ToList();
 
             orderedHoursByWinRate = HourStats.OrderByDescending(_hour => _hour.Value.GetWinRate()).ToList();
+
+            orderedHeroByTotalWins = HeroStats.OrderByDescending(_hero => _hero.Value.GetWins()).ToList();
+            orderedHeroByWinRate = HeroStats.OrderByDescending(_hero => _hero.Value.GetWinRate()).ToList();
         }
     }
 }

@@ -208,12 +208,15 @@ namespace PerformanceTracker
             Console.WriteLine($"2nd Best Time of day is {Common.HourMorningAfternoon(stats.orderedHoursByWinRate[1].Key)} At {stats.orderedHoursByWinRate[1].Value.GetWinRate()}%");
             Console.WriteLine($"3rd Best Time of day is {Common.HourMorningAfternoon(stats.orderedHoursByWinRate[2].Key)} At {stats.orderedHoursByWinRate[2].Value.GetWinRate()}%");
             Common.RowOfDashes();
-            Console.WriteLine("Hourly breakdown:");
+            /*Console.WriteLine("Hourly breakdown:");
 
             foreach (var _hour in stats.orderedHoursByWinRate)
             {
                 Console.WriteLine($"| {Common.HourMorningAfternoon(_hour.Key)} | {_hour.Value.GetWinRate()}% |");
-            }
+            }*/
+            Console.WriteLine($"Best Hero for win rate is {stats.orderedHeroByWinRate[0].Key} With {stats.orderedHeroByWinRate[0].Value.GetWinRate()}%");
+            Console.WriteLine($"Worst Hero for win rate is {stats.orderedHeroByWinRate.Last().Key} at {stats.orderedHeroByWinRate.Last().Value.GetWinRate()}%");
+
         }
 
         static void ApplicationHelp()
