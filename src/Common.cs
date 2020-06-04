@@ -53,6 +53,19 @@ namespace PerformanceTracker
             return (double)TotalDeaths / (allGames.Count-2);
         }
 
+        public static string HourMorningAfternoon(int hour)
+        {
+            if (hour == 0)
+                return "Midnight"; //"12 AM";
+            if (hour == 12)
+                return "Midday"; //"12 PM";
+            if (hour > 0 && hour < 12)
+                return hour + " AM";
+            if (hour > 12 && hour < 24)
+                return (hour-12) + " PM";
+            throw new Exception("Hour is not valid"); 
+        }
+
         private static void WriteTextInColour(string input, ConsoleColor color)
         {
             Console.ForegroundColor = color;

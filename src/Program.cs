@@ -202,15 +202,17 @@ namespace PerformanceTracker
             Console.WriteLine($"Best Map for win rate is {stats.orderedMapsByWinRate[0].Key} At {stats.orderedMapsByWinRate[0].Value.GetWinRate()}% for a total of {stats.orderedMapsByWinRate[0].Value.GetWins()} Wins");
             
             Common.RowOfDashes();
-            Console.WriteLine($"Best Time of day is {stats.orderedHoursByWinRate[0].Key} At {stats.orderedHoursByWinRate[0].Value.GetWinRate()}%");
-            Console.WriteLine($"2nd Best Time of day is {stats.orderedHoursByWinRate[1].Key} At {stats.orderedHoursByWinRate[1].Value.GetWinRate()}%");
-            Console.WriteLine($"3rd Best Time of day is {stats.orderedHoursByWinRate[2].Key} At {stats.orderedHoursByWinRate[2].Value.GetWinRate()}%");
+
+            Console.WriteLine($"Best Time of day is {Common.HourMorningAfternoon(stats.orderedHoursByWinRate[0].Key)} At {stats.orderedHoursByWinRate[0].Value.GetWinRate()}%");
+
+            Console.WriteLine($"2nd Best Time of day is {Common.HourMorningAfternoon(stats.orderedHoursByWinRate[1].Key)} At {stats.orderedHoursByWinRate[1].Value.GetWinRate()}%");
+            Console.WriteLine($"3rd Best Time of day is {Common.HourMorningAfternoon(stats.orderedHoursByWinRate[2].Key)} At {stats.orderedHoursByWinRate[2].Value.GetWinRate()}%");
             Common.RowOfDashes();
             Console.WriteLine("Hourly breakdown:");
 
             foreach (var _hour in stats.orderedHoursByWinRate)
             {
-                Console.WriteLine($"| {_hour.Key} | {_hour.Value.GetWinRate()}% |");
+                Console.WriteLine($"| {Common.HourMorningAfternoon(_hour.Key)} | {_hour.Value.GetWinRate()}% |");
             }
         }
 
